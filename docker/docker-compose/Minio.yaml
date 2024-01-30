@@ -1,0 +1,81 @@
+version: '3.9'
+services:
+  minio1:
+    restart: always
+    privileged: true
+    image: "minio/minio:RELEASE.2024-01-01T16-36-33Z"
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - /opt/app/minio/data1:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --console-address ':9001' http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 20s
+      retries: 3
+    networks:
+      - mynetwork
+
+  minio2:
+    restart: always
+    privileged: true
+    image: "minio/minio:RELEASE.2024-01-01T16-36-33Z"
+    ports:
+      - 9100:9000
+      - 9101:9001
+    volumes:
+      - /opt/app/minio/data2:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --console-address ':9001' http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 20s
+      retries: 3
+    networks:
+      - mynetwork
+
+  minio3:
+    restart: always
+    privileged: true
+    image: "minio/minio:RELEASE.2024-01-01T16-36-33Z"
+    ports:
+      - "9200:9000"
+      - "9201:9001"
+    volumes:
+      - /opt/app/minio/data3:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --console-address ':9001' http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 20s
+      retries: 3
+    networks:
+      - mynetwork
+
+  minio4:
+    restart: always
+    privileged: true
+    image: "minio/minio:RELEASE.2024-01-01T16-36-33Z"
+    ports:
+      - "9300:9000"
+      - "9301:9001"
+    volumes:
+      - /opt/app/minio/data4:/data
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=12345678
+    command: server --console-address ':9001' http://minio{1...4}/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 20s
+      retries: 3
+    networks:
+      - mynetwork
