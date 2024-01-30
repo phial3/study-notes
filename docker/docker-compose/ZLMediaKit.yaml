@@ -1,9 +1,8 @@
-version: "3.3"
-
+version: "3.9"
 services:
-  zlm:
-    container_name: zlm
+  zlmediakit:
     restart: always
+    privileged: true
     image: zlmediakit/zlmediakit:master
     ports:
       - 1935:1935
@@ -14,3 +13,7 @@ services:
       - 10000:10000/udp
       - 8000:8000/udp
       - 9000:9000/udp
+    volumes:
+      - ./config:/config
+      - ./logs:/log
+      - ./media:/media
