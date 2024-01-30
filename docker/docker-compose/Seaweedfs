@@ -1,0 +1,196 @@
+version: '3.9'
+
+services:
+  master1:
+    image: chrislusf/seaweedfs:3.60
+    restart: always
+    privileged: true
+    network_mode: "host"
+    ports:
+      - 9333:9333
+      - 19333:19333
+    volumes:
+      - ./master1:/data
+    command: 'master -ip=master1 -ip.bind=master1 -port=9333 -port.grpc=19333 -metricsPort=9320 -peers=master1:9333,master2:9334,master3:9335 -volumePreallocate=false -defaultReplication=010 -cpuprofile=/data/master-cpuprofile.log -memprofile=/data/master-memprofile.log'
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  master2:
+    image: chrislusf/seaweedfs:3.60
+    restart: always
+    privileged: true
+    network_mode: "host"
+    ports:
+      - 9334:9333
+      - 19334:19333
+    volumes:
+      - ./master2:/data
+    command: 'master -ip=master2 -ip.bind=master2 -port=9334 -port.grpc=19334 -metricsPort=9321 -peers=master1:9333,master2:9334,master3:9335 -volumePreallocate=false -defaultReplication=010 -cpuprofile=/data/master-cpuprofile.log -memprofile=/data/master-memprofile.log'
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  master3:
+    image: chrislusf/seaweedfs:3.60
+    restart: always
+    privileged: true
+    network_mode: "host"
+    ports:
+      - 9335:9333
+      - 19335:19333
+    volumes:
+      - ./master3:/data
+    command: 'master -ip=master3 -ip.bind=master3 -port=9335 -port.grpc=19335 -metricsPort=9322 -peers=master1:9333,master2:9334,master3:9335 -volumePreallocate=false -defaultReplication=010 -cpuprofile=/data/master-cpuprofile.log -memprofile=/data/master-memprofile.log'
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume1:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9340:8080
+      - 19340:18080
+    volumes:
+      - ./volume1:/data
+    command: 'volume -ip=172.24.146.132 -port=9340 -port.grpc=19340 -metricsPort=9323 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack1 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume2:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9341:8080
+      - 19341:18080
+    volumes:
+      - ./volume2:/data
+    command: 'volume -ip=172.24.146.132 -port=9341 -port.grpc=19341 -metricsPort=9324 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack1 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume3:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9342:8080
+      - 19342:18080
+    volumes:
+      - ./volume3:/data
+    command: 'volume -ip=172.24.146.132 -port=9342 -port.grpc=19342 -metricsPort=9325 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack1 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume4:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9343:8080
+      - 19343:18080
+    volumes:
+      - ./volume4:/data
+    command: 'volume -ip=172.24.146.132 -port=9343 -port.grpc=19343 -metricsPort=9326 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack2 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume5:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9344:8080
+      - 19344:18080
+    volumes:
+      - ./volume5:/data
+    command: 'volume -ip=172.24.146.132 -port=9344 -port.grpc=19344 -metricsPort=9327 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack2 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  volume6:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 9345:8080
+      - 19345:18080
+    volumes:
+      - ./volume6:/data
+    command: 'volume -ip=172.24.146.132 -port=9345 -port.grpc=19345 -metricsPort=9328 -mserver="master1:9333,master2:9334,master3:9335" -dataCenter=DefaultDataCenter -rack=Rack2 -max=100000000 -cpuprofile=/data/volume-cpuprofile.log -memprofile=/data/volume-memprofile.log'
+    depends_on:
+      - master1
+      - master2
+      - master3
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
+
+  filer:
+    image: chrislusf/seaweedfs:3.60
+    privileged: true
+    restart: always
+    network_mode: "host"
+    ports:
+      - 8888:8888
+      - 18888:18888
+    volumes:
+      - ./filerData:/data
+    command: 'filer -ip=172.24.146.132 -port=8888 -port.grpc=18888 -metricsPort=9329 -master="master1:9333,master2:9334,master3:9335"'
+    depends_on:
+      - master1
+      - master2
+      - master3
+      - volume1
+      - volume2
+      - volume3
+      - volume4
+      - volume5
+      - volume6
+    extra_hosts:
+      - "master1:172.24.146.132"
+      - "master2:172.24.146.132"
+      - "master3:172.24.146.132"
