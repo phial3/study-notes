@@ -1,0 +1,17 @@
+version: '3.9'
+services:
+  redis:
+    image: redis:7.2.3
+    restart: always
+    privileged: true
+    command: redis-server --requirepass 123456aA --appendonly yes
+    ports:
+      - 6379:6379
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - /opt/app/redis/data:/data
+      - /opt/app/redis/logs:/logs
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      - mynetwork
