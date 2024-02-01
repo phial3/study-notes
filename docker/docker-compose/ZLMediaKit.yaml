@@ -6,14 +6,18 @@ services:
     image: zlmediakit/zlmediakit:master
     ports:
       - 1935:1935
-      - 8089:80
+      - 8440:80
       - 8443:443
       - 8554:554
       - 10000:10000
       - 10000:10000/udp
+      - 8000:8000
       - 8000:8000/udp
       - 9000:9000/udp
+      - 30000-30500:30000-30500
+      - 30000-30500:30000-30500/udp
     volumes:
-      - ./config:/config
-      - ./logs:/log
-      - ./media:/media
+      - /etc/localtime:/etc/localtime:ro
+      - ./conf:/opt/media/conf
+      - ./logs:/opt/media/bin/log
+      - ./conf/zlmedia.pem:/opt/media/bin/default.pem
