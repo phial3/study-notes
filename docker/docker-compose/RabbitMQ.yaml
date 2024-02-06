@@ -1,11 +1,10 @@
-version: "3.3"
-
+version: "3.9"
 services:
   rabbitmq:
-    container_name: rabbitmq
     restart: always
-    # 带控制台版本
-    image: rabbitmq:3-management
+    privileged: true
+    container_name: rabbitmq
+    image: rabbitmq:3.9.29-management
     volumes:
       - /mnt/data/rabbitmq/home:/var/lib/rabbitmq
       - /mnt/data/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config
