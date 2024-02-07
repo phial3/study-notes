@@ -1,11 +1,8 @@
 version: '3'
-networks:
-  pulsar:
-    driver: bridge
 services:
   # Start zookeeper
   zookeeper:
-    image: apachepulsar/pulsar:latest
+    image: apachepulsar/pulsar-all:3.2.0
     container_name: zookeeper
     restart: on-failure
     networks:
@@ -29,7 +26,7 @@ services:
   pulsar-init:
     container_name: pulsar-init
     hostname: pulsar-init
-    image: apachepulsar/pulsar:latest
+    image: apachepulsar/pulsar-all:3.2.0
     networks:
       - pulsar
     command: >
@@ -45,7 +42,7 @@ services:
 
   # Start bookie
   bookie:
-    image: apachepulsar/pulsar:latest
+    image: apachepulsar/pulsar-all:3.2.0
     container_name: bookie
     restart: on-failure
     networks:
@@ -67,7 +64,7 @@ services:
 
   # Start broker
   broker:
-    image: apachepulsar/pulsar:latest
+    image: apachepulsar/pulsar-all:3.2.0
     container_name: broker
     hostname: broker
     restart: on-failure
@@ -94,3 +91,6 @@ services:
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf && exec bin/pulsar broker"
 
 
+networks:
+  pulsar:
+    driver: bridge
