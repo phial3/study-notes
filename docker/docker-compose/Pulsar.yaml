@@ -2,8 +2,8 @@ version: '3'
 services:
   zookeeper:
     image: apachepulsar/pulsar-all:3.2.0
-    restart: always
-    privileged: true
+    container_name: zookeeper
+    restart: on-failure
     networks:
       - pulsar
     volumes:
@@ -22,9 +22,9 @@ services:
       retries: 30
 
   pulsar-init:
+    container_name: pulsar-init
+    hostname: pulsar-init
     image: apachepulsar/pulsar-all:3.2.0
-    restart: always
-    privileged: true
     networks:
       - pulsar
     command: >
@@ -40,7 +40,8 @@ services:
 
   bookie:
     image: apachepulsar/pulsar-all:3.2.0
-    restart: always
+    container_name: bookie
+    restart: on-failure
     privileged: true
     networks:
       - pulsar
@@ -61,8 +62,9 @@ services:
 
   broker:
     image: apachepulsar/pulsar-all:3.2.0
-    restart: always
-    privileged: true
+    container_name: broker
+    hostname: broker
+    restart: on-failure
     networks:
       - pulsar
     environment:
@@ -73,7 +75,7 @@ services:
       managedLedgerDefaultWriteQuorum: 1
       managedLedgerDefaultAckQuorum: 1
       advertisedAddress: broker
-      advertisedListeners: 'external:pulsar://127.0.0.1:6650'
+      advertisedListeners: 'external:pulsar://172.24.82.44:6650'
       PULSAR_MEM: '-Xms512m -Xmx512m -XX:MaxDirectMemorySize=256m'
     depends_on:
       zookeeper:
@@ -87,10 +89,8 @@ services:
 
   manager:
     image: apachepulsar/pulsar-manager:v0.4.0
-    restart: always
+    restart: on-failure
     privileged: true
-    networks:
-      - pulsar
     ports:
       - "9527:9527"
       - "7750:7750"
