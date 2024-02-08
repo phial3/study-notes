@@ -1,10 +1,9 @@
 version: '3'
 services:
-  # Start zookeeper
   zookeeper:
     image: apachepulsar/pulsar-all:3.2.0
-    container_name: zookeeper
-    restart: on-failure
+    restart: always
+    privileged: true
     networks:
       - pulsar
     volumes:
@@ -22,11 +21,10 @@ services:
       timeout: 5s
       retries: 30
 
-  # Init cluster metadata
   pulsar-init:
-    container_name: pulsar-init
-    hostname: pulsar-init
     image: apachepulsar/pulsar-all:3.2.0
+    restart: always
+    privileged: true
     networks:
       - pulsar
     command: >
@@ -40,11 +38,10 @@ services:
       zookeeper:
         condition: service_healthy
 
-  # Start bookie
   bookie:
     image: apachepulsar/pulsar-all:3.2.0
-    container_name: bookie
-    restart: on-failure
+    restart: always
+    privileged: true
     networks:
       - pulsar
     environment:
@@ -62,12 +59,10 @@ services:
       - ./data/bookkeeper:/pulsar/data/bookkeeper
     command: bash -c "bin/apply-config-from-env.py conf/bookkeeper.conf && exec bin/pulsar bookie"
 
-  # Start broker
   broker:
     image: apachepulsar/pulsar-all:3.2.0
-    container_name: broker
-    hostname: broker
-    restart: on-failure
+    restart: always
+    privileged: true
     networks:
       - pulsar
     environment:
@@ -90,6 +85,21 @@ services:
       - "6080:8080"
     command: bash -c "bin/apply-config-from-env.py conf/broker.conf && exec bin/pulsar broker"
 
+  manager:
+    image: apachepulsar/pulsar-manager:v0.4.0
+    restart: always
+    privileged: true
+    networks:
+      - pulsar
+    ports:
+      - "9527:9527"
+      - "7750:7750"
+    depends_on:
+      - broker
+    links:
+      - broker
+    environment:
+      SPRING_CONFIGURATION_FILE: /pulsar-manager/pulsar-manager/application.properties
 
 networks:
   pulsar:
