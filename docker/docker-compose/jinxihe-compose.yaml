@@ -1,0 +1,112 @@
+version: '3.9'
+services:
+  mysql:
+    image: mysql:8.3.0
+    restart: always
+    privileged: true
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456aA
+      MYSQL_DATABASE: xingyun
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: 123456aA
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - /opt/app/mysql/conf:/etc/mysql/conf.d
+      - /opt/app/mysql/data:/var/lib/mysql
+      - /opt/app/mysql/logs:/var/log/mysql
+      - /opt/app/mysql/sql:/docker-entrypoint-initdb.d
+      - /etc/localtime:/etc/localtime:ro
+    command:
+      --max_connections=1000
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_general_ci
+      --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'mysqladmin -uroot -p123456aA -hlocalhost status || exit 1'"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    networks:
+      - mynetwork
+
+  redis:
+    image: redis:7.2.4
+    restart: always
+    privileged: true
+    command: redis-server --requirepass 123456aA --appendonly yes
+    ports:
+      - 6379:6379
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - /opt/app/redis/data:/data
+      - /opt/app/redis/logs:/logs
+      - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mynetwork
+
+  nginx:
+    image: nginx:1.25.4
+    restart: always
+    privileged: true
+    ports:
+      - 80:80
+    environment:
+      TZ: 'Asia/Shanghai'
+    volumes:
+      - /opt/app/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - /opt/app/nginx/dist:/usr/share/nginx/html
+      - /opt/app/nginx/logs:/var/log/nginx
+      - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - mynetwork
+
+  xingyun:
+    image: registry.cn-hangzhou.aliyuncs.com/jinxihe/xingyun:202402200952
+    restart: always
+    privileged: true
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_DATABASE: xingyun
+      MYSQL_USERNAME: root
+      MYSQL_PASSWORD: 123456aA
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_USERNAME: default
+      REDIS_PASSWORD: 123456aA
+    ports:
+      - 8080:8080
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/api/auth/captcha"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    name: mynetwork
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/16
