@@ -74,8 +74,8 @@ services:
       - mynetwork
 
   xingyun:
-    image: registry.cn-hangzhou.aliyuncs.com/jinxihe/xingyun:202402200952
-    restart: always
+    image: registry.cn-hangzhou.aliyuncs.com/jinxihe/xingyun:202402201748
+    restart: on-failure
     privileged: true
     environment:
       MYSQL_HOST: mysql
@@ -87,12 +87,13 @@ services:
       REDIS_PORT: 6379
       REDIS_USERNAME: default
       REDIS_PASSWORD: 123456aA
+      PAGEHELPER_BANNER: false
     ports:
       - 8080:8080
     volumes:
       - /etc/localtime:/etc/localtime:ro
     healthcheck:
-      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/api/auth/captcha"]
+      test: ["CMD-SHELL", "curl --silent --fail http://localhost:8080/auth/captcha || exit 1"]
       interval: 10s
       timeout: 3s
       retries: 10
