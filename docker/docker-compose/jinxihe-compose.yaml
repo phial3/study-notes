@@ -74,7 +74,7 @@ services:
       - mynetwork
 
   xingyun:
-    image: registry.cn-hangzhou.aliyuncs.com/jinxihe/xingyun:202402201748
+    image: registry.cn-hangzhou.aliyuncs.com/jinxihe/xingyun:202403301700
     restart: on-failure
     privileged: true
     environment:
