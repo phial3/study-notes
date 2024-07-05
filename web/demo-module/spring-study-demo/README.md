@@ -49,6 +49,10 @@ answer4
 
 # Spring 事务失效的情况
 
+- 异常捕获异常
+- 抛出检查异常（rollbackFor 设置对应的异常）
+- 非 public 方法
+
 # Spring Bean 创建的生命周期
 
 answer5
@@ -60,6 +64,35 @@ answer5
 5. 处理 @PostConstruct 注解
 6. 处理 InitializingBean 接口
 7. 初始化后进行 AOP
+
+# Spring 也适配继承
+
+answer 6
+
+# Spring @Autowired 注解 required = false，即使没有声明依赖 bean，启动也不会报错
+
+answer 7
+
+# Spring # 表达式
+
+answer 8
+
+# Spring Bean 加载顺序和循环依赖的关系
+
+Spring Bean 默认会按照字母顺序加载 Bean，所以当有 AService 和 BService 循环依赖的时候，AService 使用 set 注入，BService 使用构造器方式可以成功处理循环依赖问题，反之报错。
+
+answer 9
+
+# 循环依赖与原型 Bean
+
+answer 10
+
+# Spring Bean 的声明方式
+
+- @Component 等注解
+- 实现 FactoryBean
+- 实现 BeanFactoryPostProcessor 接口，使用 beanFactory.registerSingleton(beanName, class);
+- @Configuration 中配置 @Bean
 
 # Spring 的 Bean 是否线程安全
 

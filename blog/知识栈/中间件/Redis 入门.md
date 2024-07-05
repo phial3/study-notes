@@ -85,33 +85,33 @@ struct sdshdr {
 
 ### 常用指令
 
-set/get操作
+set / get操作（查看 key 内容）
 
 ```
-> SET citystring BEIJING
-> GET citystring
+> set citystring BEIJING
+> get citystring
 ```
 
 ## Hash
 
-    一般做单点登录，用这种数据结构存储用户信息，以cookiedId为key，设置30分钟超时
+    一般做单点登录，用这种数据结构存储用户信息，以cookiedId 为 key，设置 30 分钟超时
 
-HSET / HGET：一次只能操作一对键值对
+hset / hget：一次只能操作一对键值对
 
-HMSET / HMGET：一次可以操作多对键值对
+hmset / hmget：一次可以操作多对键值对
 
 ```
-> HSET testmap A 10
-> HGET testmap A
+> hset testmap A 10
+> hget testmap A
 
->HMSET testmap A 10 B 20 C 30
->HGET testmap A C
+> hmset testmap A 10 B 20 C 30
+> hget testmap A C
 
-> HGETALL testmap
+> hgetall testmap
 
-> HDEL testmap B
+> hdel testmap B
 
-> DEL testmap
+> del testmap
 ```
 
 ## List
@@ -161,11 +161,11 @@ typedef struct list {
 ### 常用指令
 
 ```
-> LPUSH citylist BEIJING SHANGHAI
-> RPUSH citylist SHENZHEN GUANGZHOU
-> LRANGE citylist 0 10
+> lpush citylist BEIJING SHANGHAI
+> rpush citylist SHENZHEN GUANGZHOU
+> lrange citylist 0 10
 # 获取长度
-> LLEN citylsit
+> llen citylsit
 ```
 
 ## Set
@@ -173,42 +173,42 @@ typedef struct list {
 集群部署中用作全局去重
 
 ```
-> SADD cityset SHENZHEN GUANGZHOU
-> SADD cityset SHENZHEN GUANGZHOU
-> SMEMBERS cityset
+> sadd cityset SHENZHEN GUANGZHOU
+> sadd cityset SHENZHEN GUANGZHOU
+> smembers cityset
 # 获取成员数
-> SCARD cityset
+> scard cityset
 # 判断是否是集合成员
-> SISMEMBER cityset SHENZHEN
+> sismember cityset SHENZHEN
 ```
 
 ## Sorted Set
 
-有Score权重参数，集合中的元素安装Score排序，可以用来做排行榜、延时任务、范围查找
+有 Score 权重参数，集合中的元素安装 Score 排序，可以用来做排行榜、延时任务、范围查找
 
 ```
-> ZADD cityzset 1 BEIJING
-> ZADD cityzset 2 SHANGHAI
-> ZADD cityzset 3 GUANGZHOU
+> zadd cityzset 1 BEIJING
+> zadd cityzset 2 SHANGHAI
+> zadd cityzset 3 GUANGZHOU
 # 获取成员数
-> ZCARD cityzset
+> zcard cityzset
 # 计算区间内的成员
-> ZCOUNT cityzset 1 2
+> zcount cityzset 1 2
 # 增加计数，键为"BEIJING"的值加上5
-> ZINCRBY cityzset 5 BEIJING
+> zincrby cityzset 5 BEIJING
 # 返回分数区间的数据
-> ZRANGE cityzset 0 100
+> zrange cityzset 0 100
 ```
 
 # 设置和查询超时时间
 
 \# 设置超时时间（单位秒）
 
-$ EXPIRE testkey 10
+$ expire testkey 10
 
 \# 查询超时时间
 
-$ TTL testkey
+$ ttl testkey
 
 # 常用指令
 
@@ -373,6 +373,10 @@ $ redis-cli -h 127.0.0.1 -p 6379 -a password
 \# 输入密码
 $ auth <password>
 
+> \# 新版本有默认账号，default
+> 
+> $ auth default <password>
+
 \# 查看密码及修改密码
 
 $ config get requirepass
@@ -393,15 +397,15 @@ $ quit
 
 \# 键值对数量
 
-$ DBSIZE
+$ dbsize
 
 \# 清空所有库
 
-$ FLUASHALL
+$ flushall
 
 \# 清空当前库
 
-$ FLUSHDB
+$ flushdb
 
 # 内存情况
 
@@ -409,7 +413,7 @@ $ FLUSHDB
 
 \# 显示 redis 信息
 
-$ INFO
+$ info
 
 \# 显示 redis 内存信息
 
@@ -443,7 +447,8 @@ Redis使用的内存分配器，在编译时指定；可以选的分配器如下
 - libc
 
 ## 内存碎片
-内存碎片是Redis在进行分配内存、回收物理内存产生的。
+
+内存碎片是 Redis 在进行分配内存、回收物理内存产生的。
 
 内存碎片的产生与以下有关：
 - 对数据进行的操作
@@ -468,23 +473,23 @@ Redis使用的内存分配器，在编译时指定；可以选的分配器如下
 
 ## AOF ( Append Only File - 仅追加文件 ) 
 
-- 命令追加：命令写入aof_buf缓冲区
+- 命令追加：命令写入 aof_buf 缓冲区
 
-- 文件写入：调用flushAppendOnlyFile函数，考虑是否要将aof_buf缓冲区写入AOF文件中
+- 文件写入：调用 flushAppendOnlyFile 函数，考虑是否要将 aof_buf 缓冲区写入 AOF 文件中
 
 - 文件同步：考虑是否将内存缓冲区的数据真正写入到硬盘
 
 ## 两者的适用场景
 
-- rdb对redis的性能几乎没有任何影响，使用空闲IO执行备份
+- rdb 对 redis 的性能几乎没有任何影响，使用空闲 IO 执行备份
 
-- 数据集越大，rdb的启动效率更高
+- 数据集越大，rdb 的启动效率更高
 
-- rdb在备份过程中如果出现宕机，重启后无法恢复数据
+- rdb 在备份过程中如果出现宕机，重启后无法恢复数据
 
-- aof带来更高的数据安全，可以恢复更近的数据
+- aof 带来更高的数据安全，可以恢复更近的数据
 
-## RDB和AOF的备份设置
+## RDB 和 AOF 的备份设置
 
 ### RDB
 
@@ -502,13 +507,12 @@ Redis使用的内存分配器，在编译时指定；可以选的分配器如下
 
 服务器配置( redis.conf 文件)：
 
-\# 在`time`秒之后，如果至少有`keyNums`个key发生改变，则dump内存快照
+\# 在 `time` 秒之后，如果至少有 `keyNums` 个key发生改变，则dump内存快照
 save [time] [keyNums]
 
 ### AOF
 
 appendfsync no | everysec | always # 不同步 | 每秒同步一次 | 每次有数据修改发生时都写入AOF文件
-
 
 ### 对比
 
@@ -540,23 +544,23 @@ appendfsync no | everysec | always # 不同步 | 每秒同步一次 | 每次有�
 
 \# 新建账号密码配置访问权限
 
-$ ACL SETUSER mcd_test on >test123456 ~mcd_test:* +@all
+$ acl setuser platform_test on >test123456 ~platform_test:* +@all
 
 \# 新建账号密码设置所有权限
 
-$ ACL SETUSER mcd_test on >test123456 ~* +@all
+$ acl setuser platform_test on >test123456 ~* +@all
 
 \# 删除账号
 
-$ ACL DELUSER mcd_test
+$ acl DELUSER platform_test
 
 \# ACL 列表
 
-$ ACL LIST
+$ acl list
 
 \# 获取账号信息
 
-$ ACL GETUSER mcd_test
+$ acl getuser platform_test
 
 # Redis 与 Memcached 的区别
 

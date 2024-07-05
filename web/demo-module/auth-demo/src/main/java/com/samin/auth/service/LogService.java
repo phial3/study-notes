@@ -5,7 +5,6 @@ import com.samin.auth.repo.SystemLogRepository;
 import com.samin.auth.vo.req.PageReq;
 import com.samin.auth.vo.resp.LogResp;
 import com.samin.auth.vo.resp.PageResp;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,16 +34,10 @@ public class LogService {
      */
     public PageResp<LogResp> page(PageReq req) {
         Pageable pageable = PageRequest.of(req.getPage(), req.getSize(), Sort.by("createTime")
-                                                                             .descending());
+                .descending());
 
         PageResp<SystemLog> logs = PageResp.success(systemLogRepository.findAll(pageable));
 
-        PageResp<LogResp> resp = PageResp.baseOf(logs);
-        resp.setContent(logs.getContent()
-                            .stream()
-                            .map(LogResp::getInstance)
-                            .collect(Collectors.toList()));
-
-        return resp;
+        return logs.map(LogResp::getInstance);
     }
 }

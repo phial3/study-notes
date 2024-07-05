@@ -1,0 +1,20 @@
+version: "3.6"
+
+services:
+  # 启动等待时间较长（本人服务器启动接近 20 分钟）
+  nexus3:
+    container_name: nexus3
+    restart: always
+    image: sonatype/nexus3:3.66.0
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: 2
+    environment:
+      - TZ=Asia/Shanghai
+    # mkdir -pv /mnt/data/nexus && chown -R 777 /mnt/data/nexus
+    volumes:
+      - /mnt/data/nexus:/nexus-data
+    ports:
+      - "8081:8081"

@@ -15,10 +15,15 @@ services:
     container_name: nacos
     ports:
       - 8848:8848
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500m"
+        max-file: 2
     environment:
       - MODE=standalone
       - SPRING_DATASOURCE_PLATFORM=mysql
-      - MYSQL_SERVICE_HOST=samin-use-case.local
+      - MYSQL_SERVICE_HOST=samin.local
       - MYSQL_SERVICE_DB_NAME=nacos
       - MYSQL_SERVICE_PORT=3306
       - MYSQL_SERVICE_USER=root

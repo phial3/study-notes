@@ -1,35 +1,36 @@
 package com.samin.usecase;
 
 
-import com.samin.usecase.repo.entity.UserDO;
+import com.samin.usecase.repo.entity.TableUser;
 import com.samin.usecase.repo.repository.UserRepository;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @SpringBootTest
 public class RedisVsDBIOTest {
 
     @Autowired
-    private RedisTemplate<String, UserDO> redisTemplate;
+    private RedisTemplate<String, TableUser> redisTemplate;
     @Autowired
     private UserRepository userRepository;
 
-    private List<UserDO> getDataSet() {
-        List<UserDO> set = new ArrayList<>();
+    private List<TableUser> getDataSet() {
+        List<TableUser> set = new ArrayList<>();
 
         // 测试结论,花费时间比： Redis < DB batch < DB
         for (int i = 0; i < 100000; i++) {
-            UserDO userDO = new UserDO();
-            userDO.setUserName("test" + i);
-            userDO.setUserDesc("test");
+            TableUser tableUser = new TableUser();
+            tableUser.setUserName("test" + i);
+            tableUser.setUserDesc("test");
 
-            set.add(userDO);
+            set.add(tableUser);
         }
 
         return set;
@@ -37,18 +38,18 @@ public class RedisVsDBIOTest {
 
     @Test
     public void redisTest() {
-        List<UserDO> set = getDataSet();
+        List<TableUser> set = getDataSet();
         long start = System.currentTimeMillis();
         set.forEach(e -> {
             redisTemplate.opsForValue()
-                         .set(e.getUserName(), e);
+                    .set(e.getUserName(), e);
         });
         System.out.println("Redis 花费：" + ((System.currentTimeMillis() - start) / 1000) + " 秒");
     }
 
     @Test
     public void dbTest() {
-        List<UserDO> set = getDataSet();
+        List<TableUser> set = getDataSet();
         long start = System.currentTimeMillis();
         set.forEach(e -> userRepository.save(e));
         System.out.println("DB 花费：" + ((System.currentTimeMillis() - start) / 1000) + " 秒");
@@ -57,7 +58,7 @@ public class RedisVsDBIOTest {
     // 缺点是只要有一组数据异常，比如格式或者长度问题，会导致整个插入失败
     @Test
     public void dbBatchTest() {
-        List<UserDO> set = getDataSet();
+        List<TableUser> set = getDataSet();
         long start = System.currentTimeMillis();
 
         userRepository.saveAll(set);

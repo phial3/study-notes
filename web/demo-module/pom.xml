@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.samin</groupId>
     <artifactId>demo-module</artifactId>
@@ -12,7 +12,7 @@
         <module>redis-demo</module>
         <module>prometheus-demo</module>
         <module>tdengine-demo</module>
-        <module>mq-demo</module>
+        <module>rabbitmq-demo</module>
         <module>aop-demo</module>
         <module>auth-demo</module>
         <module>admin-demo</module>
@@ -20,6 +20,8 @@
         <module>use-case-demo</module>
         <module>maven-demo</module>
         <module>spring-study-demo</module>
+        <module>pdf-generate-demo</module>
+        <module>minio-demo</module>
     </modules>
 
     <packaging>pom</packaging>
@@ -58,6 +60,12 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
+                <version>${springboot.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
                 <version>${springboot.version}</version>
             </dependency>
 
